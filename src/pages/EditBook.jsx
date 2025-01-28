@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";  // Import useNavigate
+import BackButton from "../components/BackButton";
 
 const EditBook = () => {
   const { id } = useParams();
-  const navigate = useNavigate();  // Use useNavigate hook
+  const navigate = useNavigate();
   const [book, setBook] = useState({
     title: "",
     author: "",
     publishYear: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch book details by ID for editing
     const fetchBookForEdit = async () => {
-      try { 
-        const token=localStorage.getItem("token")
-        const headers = { 'Authorization': `Bearer ${token}` };
-        const response = await axios.get(`http://localhost:4000/books/edit${id}`,{headers});
+      try {
+        const token = localStorage.getItem("token");
+        const headers = { Authorization: `Bearer ${token}` };
+        const response = await axios.get(`http://localhost:4000/books/${id}`, { headers });
         setBook(response.data);
-      } catch (error) {
-        console.error("Error fetching book for edit:", error);
+      } catch (err) {
+        setError("Error fetching book details. Please try again later.");
+        console.error("Error fetching book for edit:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -39,49 +43,88 @@ const EditBook = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/books/${id}`, book);
-      navigate(`/books/details/${id}`); // Redirect to details page after update
-    } catch (error) {
-      console.error("Error updating the book:", error);
+      const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.put(`http://localhost:4000/books/${id}`, book, { headers });
+      navigate(`/books/details/${id}`, { state: { book } });
+    } catch (err) {
+      console.error("Error updating the book:", err);
+      alert("Failed to update the book. Please try again.");
     }
   };
 
+  if (isLoading) {
+    return <p className="text-center mt-5">Loading book details...</p>;
+  }
+
+  if (error) {
+    return <p className="text-danger text-center mt-5">{error}</p>;
+  }
+
   return (
-    <div>
-      <h2>Edit Book</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Title</label>
-          <input
-            type="text"
-            name="title"
-            value={book.title}
-            onChange={handleChange}
-            required
-          />
+    <div className="container mt-5">
+      <div className="card shadow-lg text-info bg-light" style={{ maxWidth: "600px", margin: "0 auto" }}>
+        <div className="card-body">
+          <BackButton  />
+          <h2 className="text-center text-primary mb-4">Edit Book</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="title" className="form-label">
+                Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={book.title}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="author" className="form-label">
+                Author
+              </label>
+              <input
+                type="text"
+                id="author"
+                name="author"
+                value={book.author}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="publishYear" className="form-label">
+                Publish Year
+              </label>
+              <input
+                type="number"
+                id="publishYear"
+                name="publishYear"
+                value={book.publishYear}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="d-flex justify-content-between">
+              <button type="submit" className="btn btn-primary">
+                Update Book
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => navigate(`/books/details/${id}`)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
-        <div>
-          <label>Author</label>
-          <input
-            type="text"
-            name="author"
-            value={book.author}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Publish Year</label>
-          <input
-            type="number"
-            name="publishYear"
-            value={book.publishYear}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Update Book</button>
-      </form>
+      </div>
     </div>
   );
 };

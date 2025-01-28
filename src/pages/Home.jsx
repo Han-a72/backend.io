@@ -1,9 +1,13 @@
-import "bootstrap/dist/css/bootstrap.css";
+// import "bootstrap/dist/css/bootstrap.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import { CiSquarePlus,CiLogin } from "react-icons/ci";
 import { GoSignIn } from "react-icons/go";
+import { AiOutlineLogout } from "react-icons/ai";
+import { SiGnuprivacyguard } from "react-icons/si";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import BookTable from "../components/home/BookTable";
+import BookTable from "./BookTable";
 import { useEffect, useState } from "react";
 
 const Home = () => {
@@ -41,6 +45,12 @@ const Home = () => {
                 </Link>
                 <Link to="/Signin">
               <  GoSignIn className="display-4 m-4 "  />
+                </Link>
+                <Link to="/logout">
+              <  AiOutlineLogout className="display-4 m-4 "  />
+                </Link>
+                <Link to="/signup">
+              <  SiGnuprivacyguard className="display-4 m-4 "  />
                 </Link>
             </div>
             {error && <p className="text-danger">{error}</p>}

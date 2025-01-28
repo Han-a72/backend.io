@@ -20,7 +20,7 @@ const Login = () => {
             localStorage.setItem("token", token);
 
          
-            navigate("/");
+            navigate("/booktable");
         } catch (err) {
             setError(err.response?.data?.message || "Login failed");
         }

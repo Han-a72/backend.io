@@ -20,7 +20,7 @@ const SignIn = () => {
       localStorage.setItem("token", token);
 
       // Navigate to home page or another route
-      navigate("/");
+      navigate("/books/create");
     } catch (err) {
       setError(err.response?.data?.message || "Sign in failed");
     }
@@ -28,9 +28,10 @@ const SignIn = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
+     
+      <div className=" card shadow-lg text-info bg-light p-4 m-5" style={{ maxWidth: "400px", width: "100%" }}>
       <BackButton />
-      <div className="p-4 m-5" style={{ maxWidth: "400px", width: "100%" }}>
-        <h2 className="text-center mb-4">Sign In</h2>
+       <h2 className="text-center mb-4">Sign In</h2>
         {error && <p className="text-danger text-center">{error}</p>}
         <form onSubmit={handleSignIn}>
           <div className="mb-3">
