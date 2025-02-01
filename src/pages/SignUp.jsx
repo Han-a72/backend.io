@@ -6,6 +6,7 @@ const SignUp = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState(""); // Added email state
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
+    // Validate password
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -23,10 +25,18 @@ const SignUp = () => {
       return;
     }
 
+    // Email validation (simple)
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
     try {
-      await axios.post("http://localhost:4000/signup", { username, password });
-      navigate("/books/create");
+      const response = await axios.post("https://backend-1-ukwn.onrender.com/signup", { username, email, password });
+      const token = response.data.token;  // Assuming backend sends the token in the response
+      navigate(`/ConfirmEmail?token=${token}`);  // Use token in the URL for confirmation
     } catch (err) {
       setError(err.response?.data?.message || "Sign up failed");
     } finally {
@@ -35,11 +45,8 @@ const SignUp = () => {
   };
 
   return (
-    <div
-      className="d-flex justify-content-center align-items-center"
-      style={{ width: "100vw", height: "100vh", backgroundColor: "#f8f9fa" }}
-    >
-      <div className=" card shadow-lg text-info bg-light p-4 m-4" style={{ maxWidth: "400px", width: "100%", margin: "30px" }}>
+    <div className="d-flex justify-content-center align-items-center" style={{ width: "100vw", height: "100vh", backgroundColor: "#f8f9fa" }}>
+      <div className="card shadow-lg text-info bg-light p-4 m-4" style={{ maxWidth: "400px", width: "100%", margin: "30px" }}>
         <h2 className="text-center mb-4">Sign Up</h2>
         {error && <p className="text-danger text-center">{error}</p>}
         <form onSubmit={handleSignUp}>
@@ -50,6 +57,16 @@ const SignUp = () => {
               className="form-control"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Email</label>
+            <input
+              type="email"
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>

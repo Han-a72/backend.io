@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Logout from "./pages/Logout";
+import ConfirmEmail from "./pages/Confirmation";
 function App() {
   return (
     <BrowserRouter>
@@ -23,7 +24,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path='/login' element={<Login />} />
         <Route path='/logout' element={<Logout />} />
-       
+        <Route path='/confirmemail' element={<ConfirmEmail />} />
       </Routes>
     </BrowserRouter>
   );
