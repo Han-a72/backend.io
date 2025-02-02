@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -34,7 +34,8 @@ const SignUp = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("https://backend-1-ukwn.onrender.com/signup", { username, email, password });
+      const response = await axios.post("https://backend-io-eight.onrender.com/signup", { username, email, password });
+
       const token = response.data.token;  // Assuming backend sends the token in the response
       navigate(`/ConfirmEmail?token=${token}`);  // Use token in the URL for confirmation
     } catch (err) {

@@ -12,8 +12,9 @@ const ConfirmEmail = () => {
     const token = searchParams.get("token");
 
     if (token) {
-      axios
-        .get(`https://backend-1-ukwn.onrender.com/api/verify?token=${token}`)
+      
+      axios.get(`https://backend-io-eight.onrender.com/verify?token=${token}`)
+
         .then((res) => {
           setStatus(res.data.message);
           // Redirect to login page after successful confirmation
